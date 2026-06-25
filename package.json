@@ -1,0 +1,62 @@
+{
+  "name": "able-scrum-master-agents",
+  "displayName": "Able Scrum Master Agents",
+  "description": "AI Agents for end-to-end Scrum automation on Azure DevOps — configure via config.ini",
+  "version": "0.1.0",
+  "publisher": "flowaxis",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["AI", "Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "able.ScrumAgent",
+        "name": "ScrumAgent",
+        "description": "Able Scrum Master Agent — type @ScrumAgent then Tab to see all commands",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "BacklogRefinement",
+            "description": "Backlog Refinement — Prepare & clarify backlog items with Acceptance Criteria"
+          },
+          {
+            "name": "PokerPlanning",
+            "description": "Poker Planning — Estimate effort and suggest story points"
+          },
+          {
+            "name": "SprintPlanning",
+            "description": "Sprint Planning — Finalize sprint scope and generate SDLC child tasks per User Story"
+          },
+          {
+            "name": "DailyScrum",
+            "description": "Daily Scrum — Track progress, surface blockers and post standup summary"
+          },
+          {
+            "name": "Retrospective",
+            "description": "Retrospective — Analyse sprint velocity and draft improvement report"
+          },
+          {
+            "name": "ReleaseNotes",
+            "description": "Release Notes — Generate release notes from completed sprint stories and PRs"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "ini": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/ini": "^4.1.1",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.0"
+  }
+}

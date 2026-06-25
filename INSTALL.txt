@@ -1,0 +1,198 @@
+================================================================================
+  ABC — AI SCRUM MASTER AGENT SUITE (@ScrumAgent)
+  Installation & Usage Guide
+================================================================================
+
+PREREQUISITES
+-------------
+  1. Visual Studio Code (v1.90 or later)
+     https://code.visualstudio.com/
+
+  2. GitHub Copilot extension installed and signed in
+     VS Code → Extensions → search "GitHub Copilot" → Install
+
+  3. Node.js v18 or later
+     https://nodejs.org/
+
+  4. Azure DevOps access with a Personal Access Token (PAT)
+     Required scopes: Work Items (Read & Write), Code (Read)
+
+  5. Git (to clone the repo)
+
+
+STEP 1 — CLONE / OPEN THE PROJECT
+----------------------------------
+  Open VS Code, then open the folder:
+  C:\Users\user\Documents\GitHub\FlowAxisBPM\AIAgents
+
+  Or from terminal:
+    code "C:\Users\user\Documents\GitHub\FlowAxisBPM\AIAgents"
+
+
+STEP 2 — INSTALL DEPENDENCIES
+-------------------------------
+  Open the VS Code Terminal (Ctrl + `) and run:
+
+    npm install
+
+  This installs: axios, ini (and TypeScript dev tools)
+
+
+STEP 3 — CONFIGURE config.ini
+-------------------------------
+  Open the file:
+    AIAgents\config.ini
+
+  Fill in your details:
+
+    [azure_devops]
+    sprint_url = https://dev.azure.com/YOUR_ORG/YOUR_PROJECT/_sprints/taskboard/YOUR_TEAM/Sprint_Name
+    pat        = YOUR_PAT_TOKEN_HERE
+
+    [openai]
+    endpoint   =          <- Leave blank (uses GitHub Copilot by default)
+    deployment = gpt-4o
+    key        =          <- Leave blank
+
+  HOW TO GET YOUR SPRINT URL:
+    1. Open Azure DevOps in your browser
+    2. Go to your project → Boards → Sprints
+    3. Copy the URL from the address bar — it looks like:
+       https://dev.azure.com/myorg/myproject/_sprints/taskboard/myteam/Sprint%201
+
+  HOW TO CREATE A PAT TOKEN:
+    1. Go to https://dev.azure.com
+    2. Click your profile icon (top right) → Personal Access Tokens
+    3. Click + New Token
+    4. Set name: ScrumAgent
+    5. Scopes: Work Items → Read & Write  |  Code → Read
+    6. Copy the token and paste into config.ini
+
+  ⚠ IMPORTANT: config.ini is excluded from git (.gitignore) to keep your
+    PAT token safe. Never commit config.ini to source control.
+
+
+STEP 4 — COMPILE THE EXTENSION
+--------------------------------
+  In the VS Code Terminal:
+
+    npm run compile
+
+  Or to watch for changes automatically:
+
+    npm run watch
+
+
+STEP 5 — RUN THE EXTENSION (F5)
+---------------------------------
+  Press F5 in VS Code.
+
+  This opens a new VS Code window called "Extension Development Host".
+  The @ScrumAgent is now active inside that window.
+
+  You can also select:
+    Run → Start Debugging → "Run Able ScrumAgent"
+
+
+STEP 6 — USE @ScrumAgent IN COPILOT CHAT
+------------------------------------------
+  In the Extension Development Host window:
+
+  1. Open GitHub Copilot Chat
+     (Ctrl+Shift+I  or  View → Copilot Chat)
+
+  2. Type @ScrumAgent and press SPACE
+     A dropdown will show all available commands.
+
+  3. Type / to see all commands, then press TAB to autocomplete:
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  @ScrumAgent /BacklogRefinement                              │
+  │    → Refines all User Stories in your sprint                 │
+  │    → Rewrites descriptions + generates Acceptance Criteria   │
+  │    → Updates directly in Azure DevOps                        │
+  │                                                              │
+  │  @ScrumAgent /PokerPlanning                                  │
+  │    → Analyses each story's complexity                        │
+  │    → Suggests Fibonacci story points                         │
+  │    → Tags high-risk items with Risk-High                     │
+  │                                                              │
+  │  @ScrumAgent /SprintPlanning                                 │
+  │    → Assigns all stories to the sprint iteration             │
+  │    → Creates 7 SDLC child tasks per User Story               │
+  │      (Design, Backend Dev, Frontend Dev, Unit Testing,       │
+  │       QA Integration, Documentation, Deployment)             │
+  │    → Each task is specific to the story's ACs                │
+  │    → All tasks linked to parent story in ADO                 │
+  │                                                              │
+  │  @ScrumAgent /DailyScrum                                     │
+  │    → Pulls all sprint stories and blocked tasks              │
+  │    → Shows progress summary table                            │
+  │    → Generates standup message (paste into Teams)            │
+  │                                                              │
+  │  @ScrumAgent /Retrospective                                  │
+  │    → Calculates sprint velocity                              │
+  │    → Lists completed and carried-over stories                │
+  │    → Drafts What Went Well / Improvements / Actions          │
+  │    → Creates improvement work items in ADO backlog           │
+  │                                                              │
+  │  @ScrumAgent /ReleaseNotes v2.4                              │
+  │    → Reads all Done stories in the sprint                    │
+  │    → Groups by New Features / Bug Fixes / Improvements       │
+  │    → Generates stakeholder-ready release notes               │
+  │    → Posts to ADO Wiki + Teams stakeholder channel           │
+  └──────────────────────────────────────────────────────────────┘
+
+
+TROUBLESHOOTING
+---------------
+  ❌ "Configuration Error — sprint_url not set"
+     → Open config.ini and replace YOUR_ORG / YOUR_PROJECT etc.
+
+  ❌ "401 Unauthorized"
+     → Your PAT token may be expired or missing Write scope.
+     → Create a new PAT with Work Items (Read & Write) checked.
+
+  ❌ "No language model available"
+     → Make sure GitHub Copilot is signed in.
+     → VS Code → Accounts (bottom left) → Sign in to GitHub Copilot.
+
+  ❌ "No User Stories found"
+     → Check your sprint_url points to the correct sprint and team.
+     → Make sure there are User Stories (not just Tasks) in that iteration.
+
+  ❌ TypeScript compile errors
+     → Run: npm install
+     → Then: npm run compile
+     → Check that Node.js v18+ is installed: node --version
+
+
+PROJECT STRUCTURE
+-----------------
+  AIAgents/
+  ├── config.ini              ← Your Sprint URL + PAT (fill this in)
+  ├── package.json            ← Extension manifest + dependencies
+  ├── tsconfig.json           ← TypeScript config
+  ├── INSTALL.txt             ← This file
+  ├── .vscode/
+  │   ├── launch.json         ← F5 run config
+  │   └── tasks.json          ← Build tasks
+  └── src/
+      ├── extension.ts        ← Entry point, registers @ScrumAgent
+      ├── config.ts           ← Reads config.ini, parses Sprint URL
+      ├── adoClient.ts        ← Azure DevOps REST API calls
+      └── agents/
+          ├── backlogRefinement.ts
+          ├── pokerPlanning.ts
+          ├── sprintPlanning.ts   ← SDLC task generation
+          ├── dailyScrum.ts
+          ├── retrospective.ts
+          └── releaseNotes.ts
+
+
+SUPPORT
+-------
+  Maintained by: FlowAxis / ABC Engineering
+  Contact: rathnam.it@gmail.com
+
+================================================================================
